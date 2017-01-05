@@ -1,2 +1,2 @@
 # adwords_api_lib
-Google Adwords Api PHP library
+Google Adwords PHP Api library
