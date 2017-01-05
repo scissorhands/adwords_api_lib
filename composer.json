@@ -1,0 +1,16 @@
+{
+    "name": "scissorhands/adwords_api_lib",
+    "description": "Google Adwords PHP Api library",
+    "type": "library",
+    "require": {
+        "googleads/googleads-php-lib": "^25.0"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Edward Scissorhands",
+            "email": "edward_beats@hotmail.com"
+        }
+    ],
+    "minimum-stability": "dev"
+}
