@@ -1,9 +1,11 @@
 <?php 
 use Google\AdsApi\AdWords\AdWordsServices;
 use Google\AdsApi\AdWords\AdWordsSessionBuilder;
+use Google\AdsApi\AdWords\v201609\mcm\ManagedCustomerService;
 use Google\AdsApi\AdWords\v201609\cm\CampaignService;
 use Google\AdsApi\AdWords\v201609\cm\OrderBy;
 use Google\AdsApi\AdWords\v201609\cm\Paging;
+use Google\AdsApi\AdWords\v201609\cm\SortOrder;
 use Google\AdsApi\AdWords\v201609\cm\Selector;
 use Google\AdsApi\Common\OAuth2TokenBuilder;
 
@@ -12,6 +14,7 @@ use Google\AdsApi\Common\OAuth2TokenBuilder;
 */
 class Api
 {
+	const PAGE_LIMIT = 500;
 	private $session;
 	private $oAuth2Credential;
 	function __construct()
@@ -34,6 +37,42 @@ class Api
 			->withOAuth2Credential($this->oAuth2Credential)
 			->build();
 		}
+	}
+
+	public function get_accounts()
+	{
+		$adWordsServices = new AdWordsServices();
+		$managedCustomerService = $adWordsServices->get( $this->session, ManagedCustomerService::class);
+
+		// Create selector.
+		$selector = new Selector();
+		$selector->setFields([
+			'CustomerId', 
+			'Name',
+			'CanManageClients',
+			'CurrencyCode',
+			'DateTimeZone'
+		]);
+		$selector->setOrdering([new OrderBy('CustomerId', SortOrder::ASCENDING)]);
+		$selector->setPaging(new Paging(0, self::PAGE_LIMIT));
+
+		$accounts = [];
+		$totalNumEntries = 0;
+		do {
+			try {
+				$page = $managedCustomerService->get($selector);
+			} catch (Exception $e) {
+				return $this->api_response( $e->getMessage(), false);
+			}
+			if ($page->getEntries() !== null) {
+				$totalNumEntries = $page->getTotalNumEntries();
+				foreach ($page->getEntries() as $account) {
+					$accounts[] = $account;
+				}
+			}
+			$selector->getPaging()->setStartIndex($selector->getPaging()->getStartIndex() + self::PAGE_LIMIT);
+		} while ($selector->getPaging()->getStartIndex() < $totalNumEntries);
+		return $this->api_response( $accounts );
 	}
 
 	public function get_campaigns()
@@ -60,7 +99,7 @@ class Api
 			$page = $campaignService->get($selector);
 			return $this->api_response( $page->getEntries() );
 		} catch (Exception $e) {
-			return $this->api_response( $e->getMessage, false);
+			return $this->api_response( $e->getMessage(), false);
 		}
 	}
 
