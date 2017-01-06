@@ -1,0 +1,2 @@
+[2017-01-06 11:55:48] AW_SOAP.INFO: clientCustomerId=709-388-2876 operations=1 service=CampaignService method=get responseTime=183 requestId=00054570bb19b4980a5e4159bb0dd0f7 server=adwords.google.com isFault=0 faultMessage=  
+[2017-01-06 12:09:39] AW_SOAP.INFO: clientCustomerId=709-388-2876 operations=1 service=CampaignService method=get responseTime=77 requestId=00054570eca4bc100a5e7a48340aa1aa server=adwords.google.com isFault=0 faultMessage=  

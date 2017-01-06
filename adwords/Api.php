@@ -44,7 +44,13 @@ class Api
 		$selector = new Selector();
 		$selector->setFields([
 			'Id',
-			'Name'
+			'Name',
+			'Status',
+			'ServingStatus',
+			'StartDate',
+			'EndDate',
+			'BudgetId',
+			'TrackingUrlTemplate',
 		]);
 		$selector->setOrdering([
 			new OrderBy('Name', 'ASCENDING')
@@ -62,13 +68,13 @@ class Api
 	{
 		if($success){
 			return (object)[
+				'status' => 'success',
 				'data' => $data,
-				'status' => 'success'
 			];
 		} else {
 			return (object)[
+				'status' => 'error',
 				'message' => $data,
-				'status' => 'error'
 			];
 		}
 	}

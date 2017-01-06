@@ -1,0 +1,62 @@
+[2017-01-06 12:16:18] AW_SOAP.INFO: clientCustomerId=709-388-2876 operations=1 service=CampaignService method=get responseTime=211 requestId=00054571046472510a5e4159bb0dd0f7 server=adwords.google.com isFault=0 faultMessage=  
+[2017-01-06 12:17:14] AW_SOAP.INFO: clientCustomerId=709-388-2876 operations=1 service=CampaignService method=get responseTime=165 requestId=0005457107b616200a5e4159bb0dd0f7 server=adwords.google.com isFault=0 faultMessage=  
+[2017-01-06 12:20:03] AW_SOAP.INFO: clientCustomerId=9527366725 operations=1 service=CampaignService method=get responseTime=460 requestId=0005457111c2a4590a694188c3063057 server=adwords.google.com isFault=0 faultMessage=  
+[2017-01-06 12:21:13] AW_SOAP.WARNING: clientCustomerId=9527366725 operations=1 service=CampaignService method=get responseTime=203 requestId=0005457115fe90b80a699fc4760df859 server=adwords.google.com isFault=1 faultMessage=[SelectorError.INVALID_FIELD_NAME @ serviceSelector; trigger:'NetworkSettings', SelectorError.INVALID_FIELD_NAME @ serviceSelector; trigger:'UrlCustomParameter']  
+[2017-01-06 12:21:13] AW_SOAP.NOTICE: POST /api/adwords/cm/v201609/CampaignService?wsdl HTTP/1.1
+Host: adwords.google.com
+Connection: Keep-Alive
+User-Agent: PHP-SOAP/5.6.15
+Content-Type: text/xml; charset=utf-8
+SOAPAction: ""
+Content-Length: 1209
+Authorization: REDACTED
+
+<?xml version="1.0" encoding="UTF-8"?>
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns1="https://adwords.google.com/api/adwords/cm/v201609"><SOAP-ENV:Header><ns1:RequestHeader><ns1:clientCustomerId>9527366725</ns1:clientCustomerId><ns1:developerToken>REDACTED</ns1:developerToken><ns1:userAgent>unknown (AwApi-PHP, googleads-php-lib/25.0.0, PHP/5.6.15)</ns1:userAgent><ns1:validateOnly>false</ns1:validateOnly><ns1:partialFailure>false</ns1:partialFailure></ns1:RequestHeader></SOAP-ENV:Header><SOAP-ENV:Body><ns1:get><ns1:serviceSelector><ns1:fields>Id</ns1:fields><ns1:fields>Name</ns1:fields><ns1:fields>Status</ns1:fields><ns1:fields>ServingStatus</ns1:fields><ns1:fields>StartDate</ns1:fields><ns1:fields>EndDate</ns1:fields><ns1:fields>BudgetId</ns1:fields><ns1:fields>NetworkSettings</ns1:fields><ns1:fields>TrackingUrlTemplate</ns1:fields><ns1:fields>UrlCustomParameter</ns1:fields><ns1:ordering><ns1:field>Name</ns1:field><ns1:sortOrder>ASCENDING</ns1:sortOrder></ns1:ordering><ns1:paging><ns1:startIndex>0</ns1:startIndex><ns1:numberResults>100</ns1:numberResults></ns1:paging></ns1:serviceSelector></ns1:get></SOAP-ENV:Body></SOAP-ENV:Envelope>
+
+HTTP/1.1 500 Internal Server Error
+Content-Type: text/xml; charset=UTF-8
+Date: Fri, 06 Jan 2017 18:21:26 GMT
+Expires: Fri, 06 Jan 2017 18:21:26 GMT
+Cache-Control: private, max-age=0
+X-Content-Type-Options: nosniff
+X-Frame-Options: SAMEORIGIN
+X-XSS-Protection: 1; mode=block
+Server: GSE
+Alt-Svc: clear
+Accept-Ranges: none
+Vary: Accept-Encoding
+Transfer-Encoding: chunked
+
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"><soap:Header><ResponseHeader xmlns="https://adwords.google.com/api/adwords/cm/v201609"><requestId>0005457115fe90b80a699fc4760df859</requestId><serviceName>CampaignService</serviceName><methodName>get</methodName><operations>1</operations><responseTime>203</responseTime></ResponseHeader></soap:Header><soap:Body><soap:Fault><faultcode>soap:Server</faultcode><faultstring>[SelectorError.INVALID_FIELD_NAME @ serviceSelector; trigger:'NetworkSettings', SelectorError.INVALID_FIELD_NAME @ serviceSelector; trigger:'UrlCustomParameter']</faultstring><detail><ApiExceptionFault xmlns="https://adwords.google.com/api/adwords/cm/v201609"><message>[SelectorError.INVALID_FIELD_NAME @ serviceSelector; trigger:'NetworkSettings', SelectorError.INVALID_FIELD_NAME @ serviceSelector; trigger:'UrlCustomParameter']</message><ApplicationException.Type>ApiException</ApplicationException.Type><errors xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SelectorError"><fieldPath>serviceSelector</fieldPath><trigger>NetworkSettings</trigger><errorString>SelectorError.INVALID_FIELD_NAME</errorString><ApiError.Type>SelectorError</ApiError.Type><reason>INVALID_FIELD_NAME</reason></errors><errors xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SelectorError"><fieldPath>serviceSelector</fieldPath><trigger>UrlCustomParameter</trigger><errorString>SelectorError.INVALID_FIELD_NAME</errorString><ApiError.Type>SelectorError</ApiError.Type><reason>INVALID_FIELD_NAME</reason></errors></ApiExceptionFault></detail></soap:Fault></soap:Body></soap:Envelope>
+  
+[2017-01-06 12:22:34] AW_SOAP.WARNING: clientCustomerId=9527366725 operations=1 service=CampaignService method=get responseTime=84 requestId=000545711acf10400a699fc4760df859 server=adwords.google.com isFault=1 faultMessage=[SelectorError.INVALID_FIELD_NAME @ serviceSelector; trigger:'UrlCustomParameter']  
+[2017-01-06 12:22:34] AW_SOAP.NOTICE: POST /api/adwords/cm/v201609/CampaignService?wsdl HTTP/1.1
+Host: adwords.google.com
+Connection: Keep-Alive
+User-Agent: PHP-SOAP/5.6.15
+Content-Type: text/xml; charset=utf-8
+SOAPAction: ""
+Content-Length: 1169
+Authorization: REDACTED
+
+<?xml version="1.0" encoding="UTF-8"?>
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns1="https://adwords.google.com/api/adwords/cm/v201609"><SOAP-ENV:Header><ns1:RequestHeader><ns1:clientCustomerId>9527366725</ns1:clientCustomerId><ns1:developerToken>REDACTED</ns1:developerToken><ns1:userAgent>unknown (AwApi-PHP, googleads-php-lib/25.0.0, PHP/5.6.15)</ns1:userAgent><ns1:validateOnly>false</ns1:validateOnly><ns1:partialFailure>false</ns1:partialFailure></ns1:RequestHeader></SOAP-ENV:Header><SOAP-ENV:Body><ns1:get><ns1:serviceSelector><ns1:fields>Id</ns1:fields><ns1:fields>Name</ns1:fields><ns1:fields>Status</ns1:fields><ns1:fields>ServingStatus</ns1:fields><ns1:fields>StartDate</ns1:fields><ns1:fields>EndDate</ns1:fields><ns1:fields>BudgetId</ns1:fields><ns1:fields>TrackingUrlTemplate</ns1:fields><ns1:fields>UrlCustomParameter</ns1:fields><ns1:ordering><ns1:field>Name</ns1:field><ns1:sortOrder>ASCENDING</ns1:sortOrder></ns1:ordering><ns1:paging><ns1:startIndex>0</ns1:startIndex><ns1:numberResults>100</ns1:numberResults></ns1:paging></ns1:serviceSelector></ns1:get></SOAP-ENV:Body></SOAP-ENV:Envelope>
+
+HTTP/1.1 500 Internal Server Error
+Content-Type: text/xml; charset=UTF-8
+Date: Fri, 06 Jan 2017 18:22:47 GMT
+Expires: Fri, 06 Jan 2017 18:22:47 GMT
+Cache-Control: private, max-age=0
+X-Content-Type-Options: nosniff
+X-Frame-Options: SAMEORIGIN
+X-XSS-Protection: 1; mode=block
+Server: GSE
+Alt-Svc: clear
+Accept-Ranges: none
+Vary: Accept-Encoding
+Transfer-Encoding: chunked
+
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"><soap:Header><ResponseHeader xmlns="https://adwords.google.com/api/adwords/cm/v201609"><requestId>000545711acf10400a699fc4760df859</requestId><serviceName>CampaignService</serviceName><methodName>get</methodName><operations>1</operations><responseTime>84</responseTime></ResponseHeader></soap:Header><soap:Body><soap:Fault><faultcode>soap:Server</faultcode><faultstring>[SelectorError.INVALID_FIELD_NAME @ serviceSelector; trigger:'UrlCustomParameter']</faultstring><detail><ApiExceptionFault xmlns="https://adwords.google.com/api/adwords/cm/v201609"><message>[SelectorError.INVALID_FIELD_NAME @ serviceSelector; trigger:'UrlCustomParameter']</message><ApplicationException.Type>ApiException</ApplicationException.Type><errors xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SelectorError"><fieldPath>serviceSelector</fieldPath><trigger>UrlCustomParameter</trigger><errorString>SelectorError.INVALID_FIELD_NAME</errorString><ApiError.Type>SelectorError</ApiError.Type><reason>INVALID_FIELD_NAME</reason></errors></ApiExceptionFault></detail></soap:Fault></soap:Body></soap:Envelope>
+  
+[2017-01-06 12:23:04] AW_SOAP.INFO: clientCustomerId=9527366725 operations=1 service=CampaignService method=get responseTime=641 requestId=000545711c95d2380a5e4197e50fffee server=adwords.google.com isFault=0 faultMessage=  
