@@ -2,6 +2,8 @@
 use Google\AdsApi\AdWords\AdWordsServices;
 use Google\AdsApi\AdWords\AdWordsSessionBuilder;
 use Google\AdsApi\AdWords\v201609\mcm\ManagedCustomerService;
+use Google\AdsApi\AdWords\v201609\billing\BudgetOrderService;
+use Google\AdsApi\AdWords\v201609\cm\BudgetService;
 use Google\AdsApi\AdWords\v201609\cm\CampaignService;
 use Google\AdsApi\AdWords\v201609\cm\OrderBy;
 use Google\AdsApi\AdWords\v201609\cm\Paging;
@@ -44,7 +46,6 @@ class Api
 		$adWordsServices = new AdWordsServices();
 		$managedCustomerService = $adWordsServices->get( $this->session, ManagedCustomerService::class);
 
-		// Create selector.
 		$selector = new Selector();
 		$selector->setFields([
 			'CustomerId', 
@@ -100,6 +101,69 @@ class Api
 			return $this->api_response( $page->getEntries() );
 		} catch (Exception $e) {
 			return $this->api_response( $e->getMessage(), false);
+		}
+	}
+
+	public function generic_request( $serviceName, $fields = [], $predicates = [], $ordering = [])
+	{	
+		$service = $this->get_service( $serviceName );
+
+		$selector = new Selector();
+		$selector->setFields($fields);
+		if( $ordering ){
+			$selector->setOrdering([
+				new OrderBy( $ordering['field'], $ordering['order'] )
+			]);
+		}
+		$selector->setPaging(new Paging(0, self::PAGE_LIMIT));
+
+		$data = [];
+		$totalNumEntries = 0;
+		do {
+			try {
+				$page = $service->get($selector);
+			} catch (Exception $e) {
+				return $this->api_response( $e->getMessage(), false);
+			}
+			if ($page->getEntries() !== null) {
+				$totalNumEntries = $page->getTotalNumEntries();
+				foreach ($page->getEntries() as $requestData) {
+					$data[] = $requestData;
+				}
+			}
+			$selector->getPaging()->setStartIndex($selector->getPaging()->getStartIndex() + self::PAGE_LIMIT);
+		} while ($selector->getPaging()->getStartIndex() < $totalNumEntries);
+		return $this->api_response( $data );
+	}
+
+	private function get_service( $serviceName )
+	{
+		$adWordsServices = new AdWordsServices();
+		switch ($serviceName) {
+			case 'CampaignService':
+				return $adWordsServices->get($this->session, CampaignService::class);
+				break;
+			case 'ManagedCustomerService':
+				return $adWordsServices->get($this->session, ManagedCustomerService::class);
+				break;
+			case 'BudgetService':
+				return $adWordsServices->get($this->session, BudgetService::class);
+				break;
+			case 'BudgetOrderService':
+				return $adWordsServices->get($this->session, BudgetOrderService::class);
+				break;
+			case 'AdGroupService':
+				return $adWordsServices->get($this->session, AdGroupService::class);
+				break;
+			case 'AdGroupAdService':
+				return $adWordsServices->get($this->session, AdGroupAdService::class);
+				break;
+			case 'AdGroupCriterionService':
+				return $adWordsServices->get($this->session, AdGroupCriterionService::class);
+				break;
+			default:
+				exit('Service not supported');
+				break;
 		}
 	}
 
