@@ -7,6 +7,7 @@ use Google\AdsApi\AdWords\v201609\cm\BudgetService;
 use Google\AdsApi\AdWords\v201609\cm\CampaignService;
 use Google\AdsApi\AdWords\v201609\cm\AdGroupService;
 use Google\AdsApi\AdWords\v201609\cm\AdGroupAdService;
+use Google\AdsApi\AdWords\v201609\cm\AdGroupCriterionService;
 use Google\AdsApi\AdWords\v201609\cm\OrderBy;
 use Google\AdsApi\AdWords\v201609\cm\Paging;
 use Google\AdsApi\AdWords\v201609\cm\SortOrder;

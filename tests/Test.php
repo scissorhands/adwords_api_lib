@@ -114,5 +114,22 @@ class Test
     	);
 	}
 
+	public function ad_group_keywords( $customer_id = null, $campaign_id = null, $adGroupId = null )
+	{
+		if( $customer_id ){
+			$this->adwords->set_session( $customer_id );
+		}
+		$predicates = [
+		];
+		$sorting = [];
+    	return $this->adwords->generic_request('AdGroupCriterionService', [
+				"FinalUrls",
+				"Text"
+			], 
+			$predicates,
+			$sorting
+    	);
+	}
+
 }
 ?>
