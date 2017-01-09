@@ -5,6 +5,8 @@ use Google\AdsApi\AdWords\v201609\mcm\ManagedCustomerService;
 use Google\AdsApi\AdWords\v201609\billing\BudgetOrderService;
 use Google\AdsApi\AdWords\v201609\cm\BudgetService;
 use Google\AdsApi\AdWords\v201609\cm\CampaignService;
+use Google\AdsApi\AdWords\v201609\cm\AdGroupService;
+use Google\AdsApi\AdWords\v201609\cm\AdGroupAdService;
 use Google\AdsApi\AdWords\v201609\cm\OrderBy;
 use Google\AdsApi\AdWords\v201609\cm\Paging;
 use Google\AdsApi\AdWords\v201609\cm\SortOrder;
@@ -104,16 +106,17 @@ class Api
 		}
 	}
 
-	public function generic_request( $serviceName, $fields = [], $predicates = [], $ordering = [])
+	public function generic_request( $serviceName, $fields = [], $predicates = [], $sorting = [])
 	{	
 		$service = $this->get_service( $serviceName );
 
 		$selector = new Selector();
 		$selector->setFields($fields);
-		if( $ordering ){
-			$selector->setOrdering([
-				new OrderBy( $ordering['field'], $ordering['order'] )
-			]);
+		if( $sorting ){
+			$selector->setOrdering( $sorting );
+		}
+		if( $predicates ){
+			$selector->SetPredicates( $predicates );
 		}
 		$selector->setPaging(new Paging(0, self::PAGE_LIMIT));
 
