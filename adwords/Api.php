@@ -1,4 +1,5 @@
 <?php 
+namespace Scissorhands\GoogleAdwords;
 use Google\AdsApi\AdWords\AdWordsServices;
 use Google\AdsApi\AdWords\AdWordsSessionBuilder;
 use Google\AdsApi\AdWords\v201609\cm\BudgetService;

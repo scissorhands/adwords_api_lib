@@ -4,6 +4,7 @@
 */
 require('/vendor/autoload.php');
 require('/adwords/Api.php');
+use Scissorhands\GoogleAdwords\Api as AdsApi;
 use Google\AdsApi\AdWords\v201609\cm\AdType;
 use Google\AdsApi\AdWords\v201609\cm\OrderBy;
 use Google\AdsApi\AdWords\v201609\cm\Predicate;
@@ -13,12 +14,13 @@ use Google\AdsApi\AdWords\v201609\cm\ReportDefinitionReportType;
 use Google\AdsApi\AdWords\v201609\cm\SortOrder;
 use Google\AdsApi\AdWords\v201609\cm\DateRange;
 use Google\AdsApi\AdWords\Reporting\v201609\ReportDefinitionDateRangeType;
+
 class Test
 {
 	private $adwords;
 	function __construct()
 	{
-		$this->adwords = new Api();
+		$this->adwords = new AdsApi();
 	}
 
 	public function get_accounts( $customer_id = null )
