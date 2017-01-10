@@ -9,7 +9,10 @@ use Google\AdsApi\AdWords\v201609\cm\OrderBy;
 use Google\AdsApi\AdWords\v201609\cm\Predicate;
 use Google\AdsApi\AdWords\v201609\cm\AdGroupAdStatus;
 use Google\AdsApi\AdWords\v201609\cm\PredicateOperator;
+use Google\AdsApi\AdWords\v201609\cm\ReportDefinitionReportType;
 use Google\AdsApi\AdWords\v201609\cm\SortOrder;
+use Google\AdsApi\AdWords\v201609\cm\DateRange;
+use Google\AdsApi\AdWords\Reporting\v201609\ReportDefinitionDateRangeType;
 class Test
 {
 	private $adwords;
@@ -112,6 +115,25 @@ class Test
 			$predicates,
 			$sorting
     	);
+	}
+
+	public function report( $customer_id = null )
+	{
+		if( $customer_id ){
+			$this->adwords->set_session( $customer_id );
+		}
+		return $this->adwords->report(
+			ReportDefinitionReportType::CAMPAIGN_PERFORMANCE_REPORT,
+			[
+				'CampaignId',
+				'CampaignName',
+				'Impressions', 
+				'Clicks', 
+				'Cost'
+			],
+			ReportDefinitionDateRangeType::CUSTOM_DATE, 
+			null, new DateRange('2017-01-01', '2017-01-08')
+		);
 	}
 
 	public function ad_group_keywords( $customer_id = null, $campaign_id = null, $adGroupId = null )

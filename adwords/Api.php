@@ -1,8 +1,6 @@
 <?php 
 use Google\AdsApi\AdWords\AdWordsServices;
 use Google\AdsApi\AdWords\AdWordsSessionBuilder;
-use Google\AdsApi\AdWords\v201609\mcm\ManagedCustomerService;
-use Google\AdsApi\AdWords\v201609\billing\BudgetOrderService;
 use Google\AdsApi\AdWords\v201609\cm\BudgetService;
 use Google\AdsApi\AdWords\v201609\cm\CampaignService;
 use Google\AdsApi\AdWords\v201609\cm\AdGroupService;
@@ -12,6 +10,11 @@ use Google\AdsApi\AdWords\v201609\cm\OrderBy;
 use Google\AdsApi\AdWords\v201609\cm\Paging;
 use Google\AdsApi\AdWords\v201609\cm\SortOrder;
 use Google\AdsApi\AdWords\v201609\cm\Selector;
+use Google\AdsApi\AdWords\v201609\mcm\ManagedCustomerService;
+use Google\AdsApi\AdWords\v201609\billing\BudgetOrderService;
+use Google\AdsApi\AdWords\Reporting\v201609\ReportDefinition;
+use Google\AdsApi\AdWords\Reporting\v201609\DownloadFormat;
+use Google\AdsApi\AdWords\Reporting\v201609\ReportDownloader;
 use Google\AdsApi\Common\OAuth2TokenBuilder;
 
 /**
@@ -171,6 +174,36 @@ class Api
 		}
 	}
 
+	public function report( $reportType, $fields, $dateRangeType, $predicated = null, $dateRange = null )
+	{
+		$selector = new Selector();
+		$selector->setFields( $fields );
+
+		if( $predicated ){
+			$selector->setPredicates($predicated);
+		}
+		if( $dateRangeType == 'CUSTOM_DATE' ){
+			$selector->setDateRange( $dateRange );
+		}
+
+		$reportDefinition = new ReportDefinition();
+		$reportDefinition->setSelector($selector);
+		$reportDefinition->setReportName("{$reportType}: '{$this->session->getClientCustomerId()}' ".uniqid() );
+		$reportDefinition->setDateRangeType( $dateRangeType );
+		$reportDefinition->setReportType( $reportType );
+		$reportDefinition->setDownloadFormat(DownloadFormat::CSV);
+
+		$reportDownloader = new ReportDownloader($this->session);
+		try {
+			$reportDownloadResult = $reportDownloader->downloadReport($reportDefinition);
+		} catch (Exception $e) {
+			return $this->api_response($e->getMessage(), false);
+		}
+		return $this->api_response(
+			$this->csvStringToObjectArray( $reportDownloadResult->getAsString() )
+		);
+	}
+
 	public function api_response($data = null, $success = true)
 	{
 		if($success){
@@ -184,6 +217,47 @@ class Api
 				'message' => $data,
 			];
 		}
+	}
+
+	private function csvStringToObjectArray( $csv, $add_field = null ) {
+		$csv = str_replace( "%", "", $csv );
+		$csv = str_replace( "Day", "date", $csv );
+		$arr = str_getcsv( $csv, "\n" );
+		unset( $arr[count( $arr )-1] );
+		unset( $arr[0] );
+		$patterns = array(); $replace = array();
+		$patterns[] = "/[\/]/"; $replace[] = "";
+		$patterns[] = "/\s\s+/"; $replace[] = " ";
+		$patterns[] = "/\s/"; $replace[] = "_";
+		$patterns[] = "/[.]/"; $replace[] = "";
+		$row1 = strtolower( preg_replace($patterns, $replace, $arr[1]) );
+
+		unset( $arr[1] );
+		$csv_fields = explode( ",", $row1 );
+		$stats = array();
+
+		foreach ( $arr as $row ) {
+			$values = str_getcsv( $row, ",", '"' );
+			$obj = new stdClass();
+			foreach ( $values as $key => $value ) {
+				$field = $csv_fields[$key];
+				if ( $field == "cost" || $field == "avg_cpc" || $field == "budget" ) {
+					$obj->$field = $value/1000000;
+				}
+				else {
+					if( is_numeric($value) ){
+						$obj->$field = (double) $value;
+					}else{
+						$obj->$field = $value;
+					}
+				}
+			}
+			if ( $add_field ) {
+				$obj->$add_field["field"] = $add_field["value"];
+			}
+			$stats[] = $obj;
+		}
+		return $stats;
 	}
 }
 ?>
