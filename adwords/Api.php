@@ -239,7 +239,7 @@ class Api
 
 		foreach ( $arr as $row ) {
 			$values = str_getcsv( $row, ",", '"' );
-			$obj = new stdClass();
+			$obj = new \stdClass();
 			foreach ( $values as $key => $value ) {
 				$field = $csv_fields[$key];
 				if ( $field == "cost" || $field == "avg_cpc" || $field == "budget" ) {
