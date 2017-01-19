@@ -1,21 +1,16 @@
 <?php 
 namespace Scissorhands\GoogleAdwords;
-use Google\AdsApi\AdWords\AdWordsServices;
-use Google\AdsApi\AdWords\AdWordsSessionBuilder;
-use Google\AdsApi\AdWords\v201609\cm\BudgetService;
+use Google\AdsApi\AdWords\Reporting\v201609\ReportDefinition;
+use Google\AdsApi\AdWords\Reporting\v201609\DownloadFormat;
+use Google\AdsApi\AdWords\Reporting\v201609\ReportDownloader;
 use Google\AdsApi\AdWords\v201609\cm\CampaignService;
-use Google\AdsApi\AdWords\v201609\cm\AdGroupService;
-use Google\AdsApi\AdWords\v201609\cm\AdGroupAdService;
-use Google\AdsApi\AdWords\v201609\cm\AdGroupCriterionService;
 use Google\AdsApi\AdWords\v201609\cm\OrderBy;
 use Google\AdsApi\AdWords\v201609\cm\Paging;
 use Google\AdsApi\AdWords\v201609\cm\SortOrder;
 use Google\AdsApi\AdWords\v201609\cm\Selector;
 use Google\AdsApi\AdWords\v201609\mcm\ManagedCustomerService;
-use Google\AdsApi\AdWords\v201609\billing\BudgetOrderService;
-use Google\AdsApi\AdWords\Reporting\v201609\ReportDefinition;
-use Google\AdsApi\AdWords\Reporting\v201609\DownloadFormat;
-use Google\AdsApi\AdWords\Reporting\v201609\ReportDownloader;
+use Google\AdsApi\AdWords\AdWordsServices;
+use Google\AdsApi\AdWords\AdWordsSessionBuilder;
 use Google\AdsApi\Common\OAuth2TokenBuilder;
 
 /**
@@ -24,13 +19,23 @@ use Google\AdsApi\Common\OAuth2TokenBuilder;
 class Api
 {
 	const PAGE_LIMIT = 500;
+	const SERVICE_CLASS_PATH = 'Google\AdsApi\AdWords\\';
+	const LATEST_VERSION = 'v201609';
 	private $session;
 	private $oAuth2Credential;
+	private $version;
+
 	function __construct()
 	{
 		$this->oAuth2Credential = (new OAuth2TokenBuilder())
 		->fromFile()->build();
 		$this->set_session();
+		$this->set_version(Api::LATEST_VERSION);
+	}
+
+	private function get_service_class_path()
+	{
+		return Api::SERVICE_CLASS_PATH.$this->version.'\\';
 	}
 
 	public function set_session( $customer_id = null )
@@ -46,6 +51,11 @@ class Api
 			->withOAuth2Credential($this->oAuth2Credential)
 			->build();
 		}
+	}
+
+	public function set_version( $version )
+	{
+		$this->version = $version;
 	}
 
 	public function get_accounts()
@@ -111,9 +121,9 @@ class Api
 		}
 	}
 
-	public function generic_request( $serviceName, $fields = [], $predicates = [], $sorting = [])
+	public function generic_request( $serviceClassSubPath, $fields = [], $predicates = [], $sorting = [])
 	{	
-		$service = $this->get_service( $serviceName );
+		$service = $this->get_service( $serviceClassSubPath );
 
 		$selector = new Selector();
 		$selector->setFields($fields);
@@ -144,35 +154,36 @@ class Api
 		return $this->api_response( $data );
 	}
 
-	private function get_service( $serviceName )
+	public function raw_request( $serviceClassSubPath, $fields = [], $predicates = [], $sorting = [] )
+	{
+		$service = $this->get_service( $serviceClassSubPath );
+
+		$selector = new Selector();
+		$selector->setFields($fields);
+		if( $sorting ){
+			$selector->setOrdering( $sorting );
+		}
+		if( $predicates ){
+			$selector->SetPredicates( $predicates );
+		}
+		$selector->setPaging(new Paging(0, self::PAGE_LIMIT));
+
+		$data = [];
+		$totalNumEntries = 0;
+		try {
+			$request = $service->get($selector);
+		} catch (Exception $e) {
+			return $this->api_response( $e->getMessage(), false);
+		}
+		return $this->api_response( $request );
+	}
+
+	private function get_service( $serviceClassSubPath )
 	{
 		$adWordsServices = new AdWordsServices();
-		switch ($serviceName) {
-			case 'CampaignService':
-				return $adWordsServices->get($this->session, CampaignService::class);
-				break;
-			case 'ManagedCustomerService':
-				return $adWordsServices->get($this->session, ManagedCustomerService::class);
-				break;
-			case 'BudgetService':
-				return $adWordsServices->get($this->session, BudgetService::class);
-				break;
-			case 'BudgetOrderService':
-				return $adWordsServices->get($this->session, BudgetOrderService::class);
-				break;
-			case 'AdGroupService':
-				return $adWordsServices->get($this->session, AdGroupService::class);
-				break;
-			case 'AdGroupAdService':
-				return $adWordsServices->get($this->session, AdGroupAdService::class);
-				break;
-			case 'AdGroupCriterionService':
-				return $adWordsServices->get($this->session, AdGroupCriterionService::class);
-				break;
-			default:
-				exit('Service not supported');
-				break;
-		}
+		return $adWordsServices->get($this->session, $this->get_service_class_path().
+			str_replace('/', '\\', $serviceClassSubPath )
+		);
 	}
 
 	public function report( $reportType, $fields, $dateRangeType, $predicated = null, $dateRange = null )

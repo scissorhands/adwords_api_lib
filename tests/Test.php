@@ -44,7 +44,15 @@ class Test
 		if( $customer_id ){
 			$this->adwords->set_session( $customer_id );
 		}
-    	return $this->adwords->generic_request('CampaignService', ['Id','Name']);
+    	return $this->adwords->generic_request('cm/CampaignService', ['Id','Name']);
+	}
+
+	public function raw_request( $customer_id = null )
+	{
+    	return $this->adwords->raw_request('cm/LocationCriterionService', 
+    		['Id', 'CanonicalName', 'Reach'],
+    		[ new Predicate('Id', PredicateOperator::IN, [9047086]) ]
+    	)->data[0]->getCanonicalName();
 	}
 
 	public function budget_order( $customer_id = null )
@@ -52,7 +60,7 @@ class Test
 		if( $customer_id ){
 			$this->adwords->set_session( $customer_id );
 		}
-    	return $this->adwords->generic_request('BudgetOrderService', [
+    	return $this->adwords->generic_request('billing\BudgetOrderService', [
     		'BudgetOrderName',	
 			'EndDateTime',	
 			'Id',
@@ -67,7 +75,7 @@ class Test
 		if( $customer_id ){
 			$this->adwords->set_session( $customer_id );
 		}
-    	return $this->adwords->generic_request('BudgetService', [
+    	return $this->adwords->generic_request('cm/BudgetService', [
     		'Amount',
 			'BudgetId',
 			'BudgetName',
@@ -83,7 +91,7 @@ class Test
 		if( $customer_id ){
 			$this->adwords->set_session( $customer_id );
 		}
-    	return $this->adwords->generic_request('AdGroupService', [
+    	return $this->adwords->generic_request('cm/AdGroupService', [
     		"Id",
 			"CampaignId",
 			'Name'
@@ -105,7 +113,7 @@ class Test
 			])
 		];
 		$sorting = [new OrderBy('HeadlinePart2', SortOrder::ASCENDING)];
-    	return $this->adwords->generic_request('AdGroupAdService', [
+    	return $this->adwords->generic_request('cm/AdGroupAdService', [
 				"Id",
 				"CampaignId",
 				"AdGroupId",
@@ -146,7 +154,7 @@ class Test
 		$predicates = [
 		];
 		$sorting = [];
-    	return $this->adwords->generic_request('AdGroupCriterionService', [
+    	return $this->adwords->generic_request('cm/AdGroupCriterionService', [
 				"FinalUrls",
 				"Text"
 			], 
